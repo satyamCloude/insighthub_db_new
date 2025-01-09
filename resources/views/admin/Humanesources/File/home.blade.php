@@ -1,0 +1,186 @@
+@extends('layouts.admin')
+@section('title', 'File')
+@section('content')
+<!-- Add the Bootstrap JavaScript and jQuery dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+  .actives{
+    border: 0px solid #1ff11f;
+    padding: 0px 1px 0px 17px;
+    border-radius: 146px;
+    background: #1ff11f;
+    }
+
+  .inactives{
+    border: 0px solid red;
+    padding: 0px 1px 0px 17px;
+    border-radius: 146px;
+    background: red;
+    }
+    .orangecose{
+    border: 0px solid orange;
+    padding: 0px 1px 0px 17px;
+    border-radius: 146px;
+    background: orange;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="py-3 mb-4"><span class="text-muted fw-light">File /</span> Home</h4>
+    @if(Session::has('success'))
+   <div class="alert alert-success" role="alert">{{ Session::get('success') }}</div>
+    @endif
+  <!-- File List Table -->
+  <div class="card">
+    <div class="row">
+      <div class="col-md-6">
+          <h5 class="card-header">File's List</h5>
+      </div>
+      <div class="col-md-6 text-end">
+          <a href="{{url('admin/File/home')}}" class="btn btn-warning mt-3 m-3"><i class="fas fa-sync-alt"></i></a>
+          <a href="{{url('admin/File/add')}}" class="btn btn-primary mt-3 m-3">Add</a>
+      </div>
+    </div>
+      <div class="card-datatable table-responsive">
+        <div id="DataTables_Table_3_wrapper" class="dataTables_wrapper dt-bootstrap5">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="DataTables_Table_3_length"><label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+              <div id="DataTables_Table_3_filter" class="dataTables_filter">
+                  <form method="GET" action="">    
+                  <label>Search: <input type="search" class="form-control" name="search" placeholder="" aria-controls="DataTables_Table_3"></label>
+                </form>
+              </div>
+            </div>
+          </div>
+          <table class="dt-responsive table dataTable dtr-column" id="DataTables_Table_3" aria-describedby="DataTables_Table_3_info">
+            <thead>
+              <tr>
+                <th class="control sorting_disabled dtr-hidden sorting_asc" rowspan="1" colspan="1" style="width: 27.6562px; display: none;" aria-label=""></th>
+                <th>ID</th>
+                <th>Employees</th>
+                <th>View Documents</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="result">
+              @if(count($File) > 0)
+             @foreach($File as $key=> $user)
+              @php          
+                $Employee =  \App\Models\user::select('first_name')->where('id',$user->employee_id)->first();           
+              @endphp
+              <tr class="odd">
+                  <td>{{ $key+1 }} </td>
+                   <td>
+                     <img class="rounded-circle" style="margin-right: 15px;margin-top: 10px;" src="{{isset($user->profile_img) ? $user->profile_img : url('public/images/21104.png')}}" height="30" width="30" alt="User avatar" />{{$user->first_name }}<div style="font-size:12px;margin-left: 46px;margin-top: -11px;">{{$user->email}}</div>
+                          </td>
+                  <td><a  target="_blank" href="{{$user->documents}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-eye"></i></a></td>
+                  <td>
+                    <div class="btn-group">
+                          <button type="button" class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-dots-vertical"></i>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end" style="">
+                            <li><a class="dropdown-item" href="{{url('admin/File/edit/'.$user->id)}}">Edit</a></li>
+                            <li><button class="dropdown-item delete_debtcase" url="{{url('admin/File/delete/'.$user->id)}}" id="{{$user->id}}">Delete</button></li>
+                          </ul>
+                      </div>
+                  </td>
+              </tr>
+              @endforeach
+              @else
+              <tr>
+                <td class="text-center" colspan="4">No Data Found</td>
+              </tr>
+              @endif             
+
+            </tbody>
+        </table>
+          <div class="p-1" style="float: right;">
+              {{ $File->links() }}
+          </div>
+      </div>
+      </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $(".delete_debtcase").click(function (e) {
+            var id = $(this).attr('id');
+            var url = $(this).attr('url');
+            e.preventDefault();
+            bootbox.confirm({
+                message: "Are you sure?",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Delete'
+                    },
+                },
+                callback: function (result) {
+                    if (result) {
+                        window.location.href = url;
+                    }
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var currentYear = new Date().getFullYear();
+        var startYear = 2015;
+        var $selectYear = $('#year');
+        var $selectMonth = $('#months');
+
+        // Populate the select elements with options
+        for (var year = currentYear; year >= startYear; year--) {
+            $selectYear.append($('<option>', {
+                value: year,
+                text: year
+            }));
+        }
+
+        // Handle the change event of the select elements
+        $selectYear.on('change', fetchData);
+        $selectMonth.on('change', fetchData);
+
+        function fetchData() {
+            var selectedYear = $selectYear.val();
+            var selectedMonth = $selectMonth.val();
+
+            // Make an AJAX request to fetch data based on the selected year and month
+            $.ajax({
+                url: "{{ url('admin/File/get_File_yeardata') }}",
+                method: 'GET',
+                data: { year: selectedYear, month: selectedMonth },
+                success: function (data) {
+                    // Handle the successful response
+                    $('#result').empty(); // Clear previous content
+
+                    if (data.length > 0) {
+                        $('#result').html(data);
+                    } else {
+                        $('#result').html('<tr><td colspan="8" class="text-center"><span>No Data Found</span></td></tr>');
+                    }
+                },
+                error: function () {
+                    $('#result').html('<tr><td colspan="8" class="text-center"><span>Error fetching data.</span></td></tr>');
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+@endsection

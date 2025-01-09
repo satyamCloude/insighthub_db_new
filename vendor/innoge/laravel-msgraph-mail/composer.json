@@ -1,0 +1,70 @@
+{
+    "name": "innoge/laravel-msgraph-mail",
+    "description": "Laravel Mail driver for Microsoft Office 365 using the MSGraph API",
+    "keywords": [
+        "InnoGE",
+        "laravel",
+        "laravel-msgraph-mail"
+    ],
+    "homepage": "https://github.com/innoge/laravel-msgraph-mail",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tim Geisendoerfer",
+            "email": "geisi@users.noreply.github.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/contracts": "^9.38|^10.0|^11.0",
+        "spatie/laravel-package-tools": "^1.14.0",
+        "symfony/mailer": "^6.0|^7.0"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.5",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^6.0|^7.0|^8.0",
+        "nunomaduro/larastan": "^2.0.1",
+        "orchestra/testbench": "^7.0|^8.0|^9.0",
+        "pestphp/pest": "^1.21|^2.0",
+        "pestphp/pest-plugin-laravel": "^1.21|^2.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "InnoGE\\LaravelMsGraphMail\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "InnoGE\\LaravelMsGraphMail\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "@php vendor/bin/phpstan analyse",
+        "test": "@php vendor/bin/pest",
+        "test-coverage": "@php vendor/bin/pest --coverage",
+        "format": "@php vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "InnoGE\\LaravelMsGraphMail\\LaravelMsGraphMailServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
